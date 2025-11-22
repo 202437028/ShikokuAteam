@@ -1,59 +1,58 @@
 using UnityEngine;
 
-public class player : MonoBehaviour
+public class Player : MonoBehaviour
 {
-    // プレイヤーを y/z 軸のみで移動させる簡易スクリプト
-    // - x 軸は固定する
-    // - Rigidbody があれば物理移動（FixedUpdate + MovePosition）を使い、
-    //   Rigidbody がなければ transform.position を直接操作する
+    // ★インプットシステム
+    private InputSystem_Actions isa;
 
-    public float speed = 5f; // 移動速度
+    // 前方向の一定速度（何も押さずに直進する速さ）
+    [SerializeField] public float forwardSpeed = 10f;
+    // 左右入力に対する横移動速度
+    [SerializeField] public float lateralSpeed = 6f;
+    // 左右に移動できる範囲（x座標の最大値）
+    [SerializeField] public float maxLateral = 4f;
 
-    private float initialX; // x 座標を保持
     private Rigidbody rb;
-
-    // 入力キャッシュ（Update で読み取り、FixedUpdate で使用）
-    private float inputY = 0f;
-    private float inputZ = 0f;
 
     void Start()
     {
-        initialX = transform.position.x;
+        // ★インプットシステム
+        isa = new InputSystem_Actions();
+        isa.Enable();
+
         rb = GetComponent<Rigidbody>();
-        if (rb != null)
-        {
-            // x 軸位置を物理的に固定して回転も固定（必要に応じて調整）
-            rb.constraints = RigidbodyConstraints.FreezePositionX | RigidbodyConstraints.FreezeRotation;
-        }
     }
 
-    void Update()
-    {
-        // Z 軸（前後）はデフォルトの Vertical を使用
-        inputZ = Input.GetAxis("Vertical");
-
-        // Y 軸（上下）はキーボードの E (上) / Q (下) を使う（必要なら Input Manager に追加可）
-        inputY = 0f;
-        if (Input.GetKey(KeyCode.E)) inputY += 1f;
-        if (Input.GetKey(KeyCode.Q)) inputY -= 1f;
-
-        // Rigidbody が無ければ transform を直接操作
-        if (rb == null)
-        {
-            Vector3 pos = transform.position;
-            pos += new Vector3(0f, inputY * speed * Time.deltaTime, inputZ * speed * Time.deltaTime);
-            pos.x = initialX; // x を固定
-            transform.position = pos;
-        }
-    }
-
+    // 物理移動は FixedUpdate で行う
     void FixedUpdate()
     {
-        if (rb != null)
-        {
-            Vector3 newPos = rb.position + new Vector3(0f, inputY * speed * Time.fixedDeltaTime, inputZ * speed * Time.fixedDeltaTime);
-            newPos.x = initialX; // 念のため x を固定
-            rb.MovePosition(newPos);
-        }
+        // ★インプットシステム
+        Vector2 movement2 = isa.Player.Move.ReadValue<Vector2>();
+
+        float inputX = movement2.x; // 左右入力のみ使用（ローリングスカイ風）
+
+        // 現在の速度を取得
+        Vector3 vel = rb.linearVelocity;
+
+        // 常に前方向に一定速度を維持（z軸）
+        vel.z = forwardSpeed;
+
+        // 横方向は入力に応じて直接速度を設定
+        vel.x = inputX * lateralSpeed;
+
+        // y は物理に任せる（重力など）
+
+        rb.linearVelocity = vel;
+
+        // 位置のxを制限してプレイヤーが左右に行き過ぎないようにする
+        Vector3 pos = rb.position;
+        pos.x = Mathf.Clamp(pos.x, -maxLateral, maxLateral);
+        rb.position = pos;
+    }
+
+    // ★インプットシステム（メモリの解放）
+    void OnDisable()
+    {
+        isa.Disable();
     }
 }
