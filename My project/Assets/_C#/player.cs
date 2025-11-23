@@ -12,6 +12,11 @@ public class Player : MonoBehaviour
     // 左右に移動できる範囲（x座標の最大値）
     [SerializeField] public float maxLateral = 4f;
 
+    // 落下時のリスポーン位置
+    [SerializeField] public Vector3 respawnPosition = new Vector3(0f, 10f, 0f);
+    // y がこの値以下になったらリスポーン
+    [SerializeField] public float fallThresholdY = 0f;
+
     private Rigidbody rb;
 
     void Start()
@@ -48,6 +53,14 @@ public class Player : MonoBehaviour
         Vector3 pos = rb.position;
         pos.x = Mathf.Clamp(pos.x, -maxLateral, maxLateral);
         rb.position = pos;
+
+        // 落下チェック: y が閾値以下になったらリスポーン位置へ移動して速度をリセット
+        if (rb.position.y <= fallThresholdY)
+        {
+            rb.position = respawnPosition;
+            // 速度もリセットして不安定な挙動を防ぐ
+            rb.linearVelocity = Vector3.zero;
+        }
     }
 
     // ★インプットシステム（メモリの解放）
