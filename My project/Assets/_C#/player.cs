@@ -13,7 +13,7 @@ public class Player : MonoBehaviour
     [SerializeField] public float maxLateral = 4f;
 
     // 落下時のリスポーン位置
-    [SerializeField] public Vector3 respawnPosition = new Vector3(0f, 10f, 0f);
+    [SerializeField] public Vector3 respawnPosition = new Vector3(0f, 11f, 0f);
     // y がこの値以下になったらリスポーン
     [SerializeField] public float fallThresholdY = 0f;
 
@@ -34,7 +34,7 @@ public class Player : MonoBehaviour
         // ★インプットシステム
         Vector2 movement2 = isa.Player.Move.ReadValue<Vector2>();
 
-        float inputX = movement2.x; // 左右入力のみ使用（ローリングスカイ風）
+        float inputX = movement2.x; // 左右入力のみ使用
 
         // 現在の速度を取得
         Vector3 vel = rb.linearVelocity;
