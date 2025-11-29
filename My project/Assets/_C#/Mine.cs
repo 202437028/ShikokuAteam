@@ -4,7 +4,7 @@ public class Mine : MonoBehaviour
 {
     [Header("Respawn Settings")]
     [Tooltip("Position to move the player to when they hit this mine. Default is (0,11,0).")]
-    public Vector3 respawnPosition = new Vector3(0f, 11f, 0f);
+    public Vector3 respawnPosition = new Vector3(0f, 2f, 0f);
 
     [Tooltip("Tag used to identify the player object. Leave empty to affect any object.")]
     public string playerTag = "Player";
