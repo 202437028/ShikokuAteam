@@ -1,7 +1,7 @@
 ---
 name: daily_report
 about: 1日の作業を記録したり、みんなにやってもらいたい作業を伝えるためのものです。
-title: ''
+title: '日報:'
 labels: ''
 assignees: '202437028'
 
