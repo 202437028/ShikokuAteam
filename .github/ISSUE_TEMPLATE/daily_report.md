@@ -1,4 +1,13 @@
 ---
+name: daily_report
+about: 1日の作業を記録したり、みんなにやってもらいたい作業を伝えるためのものです。
+title: ''
+labels: ''
+assignees: '202437028'
+
+---
+
+---
 name: "日報"
 about: "1日の作業報告を記録するテンプレート"
 title: "日報: {{date}}"
