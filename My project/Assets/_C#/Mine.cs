@@ -30,16 +30,10 @@ public class Mine : MonoBehaviour
         if (col == null) return;
 
         var rb = col.attachedRigidbody;
+
         if (rb != null)
-        {
-            rb.position = respawnPosition;
-            rb.linearVelocity = Vector3.zero;
-            rb.rotation = Quaternion.identity;
-        }
+            RespawnManager.Instance.Respawn(rb);
         else
-        {
-            col.transform.position = respawnPosition;
-            col.transform.rotation = Quaternion.identity;
-        }
+            RespawnManager.Instance.Respawn(col.transform);
     }
 }

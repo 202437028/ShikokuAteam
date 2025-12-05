@@ -3,47 +3,37 @@ using UnityEngine;
 public class Wall : MonoBehaviour
 {
     [Header("Respawn Settings")]
-    [Tooltip("Position to move the player to when they touch this wall.")]
+    [Tooltip("Position to move the player to when they hit this mine. Default is (0,11,0).")]
     public Vector3 respawnPosition = new Vector3(0f, 2f, 0f);
 
-    [Tooltip("Tag used to identify the player object. If empty, any object will be respawned.")]
+    [Tooltip("Tag used to identify the player object. Leave empty to affect any object.")]
     public string playerTag = "Player";
 
-    // Collision handler for non-trigger collider
+    // Called when a non-trigger collision begins
     private void OnCollisionEnter(Collision collision)
     {
         if (!string.IsNullOrEmpty(playerTag) && !collision.collider.CompareTag(playerTag)) return;
 
-        RespawnObject(collision.collider);
+        RespawnCollider(collision.collider);
     }
 
-    // Trigger handler for trigger collider
+    // Called when this collider is a trigger and something enters it
     private void OnTriggerEnter(Collider other)
     {
         if (!string.IsNullOrEmpty(playerTag) && !other.CompareTag(playerTag)) return;
 
-        RespawnObject(other);
+        RespawnCollider(other);
     }
 
-    private void RespawnObject(Collider col)
+    private void RespawnCollider(Collider col)
     {
         if (col == null) return;
 
-        // Try to use attached Rigidbody if available to reset position/velocity safely
         var rb = col.attachedRigidbody;
+
         if (rb != null)
-        {
-            rb.position = respawnPosition;
-            // Reset linear velocity (project uses linearVelocity elsewhere)
-            rb.linearVelocity = Vector3.zero;
-            // Optionally reset rotation
-            rb.rotation = Quaternion.identity;
-        }
+            RespawnManager.Instance.Respawn(rb);
         else
-        {
-            // Fallback: move transform directly
-            col.transform.position = respawnPosition;
-            col.transform.rotation = Quaternion.identity;
-        }
+            RespawnManager.Instance.Respawn(col.transform);
     }
 }
