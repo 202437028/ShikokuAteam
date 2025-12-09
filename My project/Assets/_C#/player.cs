@@ -22,6 +22,18 @@ public class Player : MonoBehaviour
     // "Respawn"タグのオブジェクトに触れたらリスポーン
     void OnTriggerEnter(Collider other)
     {
+        // もしもぶつかった相手に「Bone」という「Tag」が付いていたならば（条件）
+        if (other.CompareTag("Bone"))
+        {
+            // ぶつかった相手を破壊する（実行）
+            Destroy(other.gameObject);
+            // BoneManager に通知してカウントを進める
+            if (BoneManager.Instance != null)
+            {
+                BoneManager.Instance.CollectBone();
+            }
+        }
+
         if (other.CompareTag("Respawn"))
         {
             if (RespawnManager.Instance != null)
