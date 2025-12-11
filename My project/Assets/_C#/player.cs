@@ -19,6 +19,41 @@ public class Player : MonoBehaviour
 
     private Rigidbody rb;
 
+    // "Respawn"タグのオブジェクトに触れたらリスポーン
+    void OnTriggerEnter(Collider other)
+    {
+        // もしもぶつかった相手に「Bone」という「Tag」が付いていたならば（条件）
+        if (other.CompareTag("Bone"))
+        {
+            // ぶつかった相手を破壊する（実行）
+            Destroy(other.gameObject);
+            // BoneManager に通知してカウントを進める
+            if (BoneManager.Instance != null)
+            {
+                BoneManager.Instance.CollectBone();
+            }
+        }
+
+        if (other.CompareTag("Respawn"))
+        {
+            if (RespawnManager.Instance != null)
+            {
+                RespawnManager.Instance.Respawn(rb);
+            }
+        }
+    }
+
+    void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Respawn"))
+        {
+            if (RespawnManager.Instance != null)
+            {
+                RespawnManager.Instance.Respawn(rb);
+            }
+        }
+    }
+
     void Start()
     {
         // ★インプットシステム
@@ -57,9 +92,10 @@ public class Player : MonoBehaviour
         // 落下チェック: y が閾値以下になったらリスポーン位置へ移動して速度をリセット
         if (rb.position.y <= fallThresholdY)
         {
-            rb.position = respawnPosition;
-            // 速度もリセットして不安定な挙動を防ぐ
-            rb.linearVelocity = Vector3.zero;
+              if (RespawnManager.Instance != null)
+              {
+                 RespawnManager.Instance.Respawn(rb);
+              }
         }
     }
 
