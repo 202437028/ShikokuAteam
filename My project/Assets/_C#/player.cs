@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Player : MonoBehaviour
 {
@@ -41,6 +42,11 @@ public class Player : MonoBehaviour
                 RespawnManager.Instance.Respawn(rb);
             }
         }
+
+        if (other.CompareTag("Goal"))
+        {
+            SceneManager.LoadScene("Clear");
+        }
     }
 
     void OnCollisionEnter(Collision collision)
@@ -51,6 +57,11 @@ public class Player : MonoBehaviour
             {
                 RespawnManager.Instance.Respawn(rb);
             }
+        }
+
+        if (collision.gameObject.CompareTag("Goal"))
+        {
+            SceneManager.LoadScene("Clear");
         }
     }
 
