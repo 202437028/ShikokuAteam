@@ -16,6 +16,9 @@ public class Jamp : MonoBehaviour
 
     [Tooltip("If this collider is configured as a trigger, the trigger handler will be used.")]
     public bool supportTrigger = false;
+    [Header("効果音キー (AudioManager)")]
+    [Tooltip("AudioManager に登録したキーを指定してください。未設定の場合は AudioManager のデフォルトを使用します。")]
+    public string soundKey = "Jamp";
 
     // Called when a non-trigger collision begins
     private void OnCollisionEnter(Collision collision)
@@ -90,5 +93,11 @@ public class Jamp : MonoBehaviour
 
         // Directly set velocity for an immediate, consistent jump behaviour
         rb.linearVelocity = newVel;
+
+        // 再生: Playerがこのジャンプ台を踏んだら効果音を鳴らす（ジャンプ台固有クリップがあればそれを使う）
+        if (AudioManager.Instance != null)
+        {
+            AudioManager.Instance.Play(soundKey);
+        }
     }
 }

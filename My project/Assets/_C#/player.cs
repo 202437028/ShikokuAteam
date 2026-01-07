@@ -26,8 +26,17 @@ public class Player : MonoBehaviour
         // もしもぶつかった相手に「Bone」という「Tag」が付いていたならば（条件）
         if (other.CompareTag("Bone"))
         {
-            // ぶつかった相手を破壊する（実行）
-            Destroy(other.gameObject);
+            // Bone コンポーネントがあれば Collect を呼び出して音と破壊を任せる
+            var boneComp = other.GetComponent<Bone>();
+            if (boneComp != null)
+            {
+                boneComp.Collect();
+            }
+            else
+            {
+                Destroy(other.gameObject);
+            }
+
             // BoneManager に通知してカウントを進める
             if (BoneManager.Instance != null)
             {

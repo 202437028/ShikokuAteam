@@ -59,6 +59,12 @@ public class RespawnManager : MonoBehaviour
         currentLives = Mathf.Max(0, initialLives - respawnCount);
         UpdateLifePoints();
         UpdateLivesText();
+        // リスポーン時に効果音を鳴らす（ゲームオーバーにならない場合のみ）
+        if (AudioManager.Instance != null && currentLives > 0)
+        {
+            AudioManager.Instance.Play("Respawn");
+        }
+
         if (currentLives <= 0)
         {
             SceneManager.LoadScene("GameOver");
